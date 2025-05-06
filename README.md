@@ -21,9 +21,17 @@ npm install
 
 You can then run the script using the following commands:
 
-* To translate a single input message: `node index.js "Hello World"`
-* To read from STDIN if no input is provided: `node index.js`
-* To use the `--wrapper` option for output formatting: `node index.js --wrapper --type ppg`
+* To translate a single input message: `node cli.js "Hello World"`
+* To read from STDIN if no input is provided: `node cli.js`
+* To use the `--wrapper` option for output formatting: `node cli.js --wrapper --type plp`
+* To exclude the wrapper, use the `--no-wrapper` option
+
+```
+-----BEGIN PLP MESSAGE-----
+Isthay isyay ayay ecretsay essagemay
+
+-----END PLP MESSAGE-----
+```
 
 Development
 -----------
