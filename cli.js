@@ -13,7 +13,7 @@ program
   .version('1.0.0')
   .argument('[message]', 'Input message (if not provided, reads from stdin)')
   .option('--no-wrapper', 'Output message without header and footer')
-  .option('-t, --type <type>', 'Type of message processing (e.g., "pgp")', 'pgp')
+  .option('-t, --type <type>', 'Type of message processing (e.g., "plp")', 'plp')
   .option('--encode', 'Force encoding (pig latin); default is true, so this is optional')
   // Optionally, in future:
   // .option('--no-encode', 'Disable encoding')
