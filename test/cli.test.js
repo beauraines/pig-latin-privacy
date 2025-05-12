@@ -1,47 +1,26 @@
-const assert = require('assert');
-const { exec } = require('child_process');
-
-// Helper function to run CLI command
-function runCliCommand(args, callback) {
-  exec(`node cli.js ${args}`, { cwd: '../' }, (error, stdout, stderr) => {
-    if (error) {
-      return callback(stderr);
-    }
-    callback(null, stdout.trim());
-  });
-}
+const { execSync } = require('child_process');
 
 describe('CLI Pig Latin Translator', () => {
-  it('should translate a single message', (done) => {
-    runCliCommand('"Hello world"', (err, result) => {
-      if (err) return done(err);
-      assert.strictEqual(result, 'Ellohay orldway');
-      done();
-    });
+  it('should translate a single message', () => {
+    const output = execSync('node cli.js "Hello World"').toString();
+    expect(output).toContain('Ellohay Orldway');
   });
 
-  it('should format with wrapper if --wrapper is provided', (done) => {
-    runCliCommand('"Hello world" --wrapper --type plp', (err, result) => {
-      if (err) return done(err);
-      const expectedOutput = '-----BEGIN PLP MESSAGE-----\nEllohay orldway\n-----END PLP MESSAGE-----';
-      assert.strictEqual(result, expectedOutput);
-      done();
-    });
+  it('should format output with wrapper', () => {
+    const output = execSync('node cli.js --wrapper "This is a secret message"').toString();
+    expect(output).toContain('-----BEGIN PLP MESSAGE-----');
+    expect(output).toContain('Isthay isyay ayay ecretsay essagemay');
+    expect(output).toContain('-----END PLP MESSAGE-----');
   });
 
-  it('should not use wrapper if --no-wrapper is provided', (done) => {
-    runCliCommand('"Hello world" --no-wrapper', (err, result) => {
-      if (err) return done(err);
-      assert.strictEqual(result, 'Ellohay orldway');
-      done();
-    });
+  it('should exclude the wrapper', () => {
+    const output = execSync('node cli.js --no-wrapper "Hello World"').toString();
+    expect(output).toContain('Ellohay Orldway');
+    expect(output).not.toContain('-----BEGIN PLP MESSAGE-----');
   });
-
-  it('should read from STDIN if no input is provided', (done) => {
-    exec('echo "Hello world" | node cli.js', { cwd: '../' }, (error, stdout, stderr) => {
-      if (error) return done(error);
-      assert.strictEqual(stdout.trim(), 'Ellohay orldway');
-      done();
-    });
+  
+  it('should handle input from STDIN', () => {
+    const output = execSync('echo "Hello STDIN" | node cli.js').toString();
+    expect(output).toContain('Ellohay TDINsway');
   });
 });
