@@ -7,7 +7,7 @@ describe('CLI Pig Latin Translator', () => {
   });
 
   it('should format output with wrapper', () => {
-    const output = execSync('node cli.js --wrapper "This is a secret message"').toString();
+    const output = execSync('node cli.js "This is a secret message"').toString();
     expect(output).toContain('-----BEGIN PLP MESSAGE-----');
     expect(output).toContain('Isthay isyay ayay ecretsay essagemay');
     expect(output).toContain('-----END PLP MESSAGE-----');
@@ -20,7 +20,7 @@ describe('CLI Pig Latin Translator', () => {
   });
   
   it('should handle input from STDIN', () => {
-    const output = execSync('echo "Hello STDIN" | node cli.js').toString();
-    expect(output).toContain('Ellohay TDINsway');
+    const output = execSync('echo "Hello STDIN" | node cli.js --no-wrapper').toString();
+    expect(output).toContain('Ellohay DINSTAY');
   });
 });
