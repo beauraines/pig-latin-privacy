@@ -38,7 +38,8 @@ Development
 
 To develop this project, you will need:
 
-1. A code editor or IDE of your choice.
+1. Run tests using the command: `npm test`.
+2. A code editor or IDE of your choice.
 2. Node.js and npm installed on your system.
 
 Here are the steps to contribute to this project:
