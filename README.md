@@ -75,24 +75,21 @@ When no mode is specified, PLP auto-detects: if input contains a PLP armor wrapp
 
 ### Shell Completion
 
-PLP supports tab completion for bash, zsh, and fish shells.
+PLP supports tab completion powered by [yargs](https://yargs.js.org/) built-in completion for bash/zsh, and a static script for fish.
 
 **Bash:**
 ```bash
 # Add to ~/.bashrc for permanent completion
-eval "$(plp completion bash)"
+eval "$(plp completion)"
 
 # Or install system-wide
-plp completion bash > /etc/bash_completion.d/plp
+plp completion > /etc/bash_completion.d/plp
 ```
 
 **Zsh:**
 ```zsh
 # Add to ~/.zshrc for permanent completion
-eval "$(plp completion zsh)"
-
-# Or install to a directory in $fpath
-plp completion zsh > "${fpath[1]}/_plp"
+eval "$(plp completion)"
 ```
 
 **Fish:**
