@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "eslint": "^10.3.0",
     "jest": "^30.3.0"
   }
