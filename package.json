@@ -1,8 +1,11 @@
 {
   "name": "pig-latin-privacy",
   "version": "1.0.0",
-  "description": "",
+  "description": "PGP-style 'encryption' using Pig Latin",
   "main": "cli.js",
+  "bin": {
+    "plp": "./cli.js"
+  },
   "scripts": {
     "test": "jest"
   },
