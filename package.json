@@ -1,6 +1,6 @@
 {
   "name": "@beauraines/pig-latin-privacy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PGP-style 'encryption' using Pig Latin",
   "main": "cli.js",
   "bin": {
