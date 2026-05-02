@@ -12,19 +12,27 @@ module.exports.addHeaderFooter = function(message, type = 'plp') {
 module.exports.stripHeaderFooter = function(text) {
   const lines = text.split('\n');
 
-  // Find header and footer lines
+  // Find header and footer lines, capturing their type labels
   let headerIdx = -1;
   let footerIdx = -1;
+  let beginLabel = null;
+  let endLabel = null;
   for (let i = 0; i < lines.length; i++) {
-    if (/^-----BEGIN [\w ]+ MESSAGE-----$/.test(lines[i].trim())) {
+    const beginMatch = lines[i].trim().match(/^-----BEGIN ([\w ]+) MESSAGE-----$/);
+    if (beginMatch) {
       headerIdx = i;
-    } else if (/^-----END [\w ]+ MESSAGE-----$/.test(lines[i].trim())) {
-      footerIdx = i;
-      break;
+      beginLabel = beginMatch[1];
+    } else {
+      const endMatch = lines[i].trim().match(/^-----END ([\w ]+) MESSAGE-----$/);
+      if (endMatch) {
+        footerIdx = i;
+        endLabel = endMatch[1];
+        break;
+      }
     }
   }
 
-  if (headerIdx === -1 || footerIdx === -1 || footerIdx <= headerIdx) {
+  if (headerIdx === -1 || footerIdx === -1 || footerIdx <= headerIdx || beginLabel !== endLabel) {
     throw new Error('Invalid message format: missing or malformed header/footer');
   }
 

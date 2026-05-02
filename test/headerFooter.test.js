@@ -49,6 +49,11 @@ describe('stripHeaderFooter', () => {
     expect(() => stripHeaderFooter('')).toThrow('Invalid message format');
   });
 
+  it('throws on mismatched BEGIN/END labels', () => {
+    const wrapped = '-----BEGIN SECRET MESSAGE-----\ntest body\n-----END PLP MESSAGE-----\n';
+    expect(() => stripHeaderFooter(wrapped)).toThrow('Invalid message format');
+  });
+
   it('strips multi-word type label', () => {
     const wrapped = '-----BEGIN TOP SECRET MESSAGE-----\ntest body\n-----END TOP SECRET MESSAGE-----\n';
     expect(stripHeaderFooter(wrapped)).toBe('test body');
