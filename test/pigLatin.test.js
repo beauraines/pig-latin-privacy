@@ -1,4 +1,4 @@
-const { encode, decode, decodeToken } = require('../pigLatin');
+const { encode, decode } = require('../pigLatin');
 
 describe('pigLatin.encode', () => {
   it('translates simple words', () => {
@@ -156,8 +156,7 @@ describe('pigLatin.decode known limitations', () => {
   // Vowel-starting words ending in "y" are ambiguous in pig latin.
   // The decoder may strip the trailing "y" because it cannot distinguish
   // between "army" + "ay" and "arm" + "yay".
-  it.each(['army', 'easy', 'only', 'every', 'any'])
-    ('cannot reliably round-trip vowel words ending in y: "%s"', (word) => {
+  it.each(['army', 'easy', 'only', 'every', 'any'])('cannot reliably round-trip vowel words ending in y: "%s"', (word) => {
       const encoded = encode(word);
       const decoded = decode(encoded);
       // The decoded result is either the original or the word without trailing 'y'
