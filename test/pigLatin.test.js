@@ -1,4 +1,4 @@
-const { encode, decode } = require('../pigLatin');
+const { encode, decode } = require('../src/pigLatin');
 
 describe('pigLatin.encode', () => {
   it('translates simple words', () => {

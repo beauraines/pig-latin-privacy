@@ -6,4 +6,4 @@ TODO
 - [ ] Add unit tests
 - [ ] Configure npm installation process
 - [ ] Setup CI/CD
-- [ ] Restructure project file hierarchy
+- [x] Restructure project file hierarchy

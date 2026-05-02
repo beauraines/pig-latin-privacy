@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const CLI = 'node cli.js';
+const CLI = 'node src/cli.js';
 
 describe('CLI encrypt', () => {
   it('encrypts a message with armor by default', () => {

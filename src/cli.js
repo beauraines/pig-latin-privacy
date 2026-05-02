@@ -3,7 +3,7 @@
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const fs = require('fs');
-const { version } = require('./package.json');
+const { version } = require('../package.json');
 const { readStdin } = require('./utils');
 const { addHeaderFooter, stripHeaderFooter, hasWrapper, hasAnyMarker } = require('./headerFooter');
 const { encode, decode } = require('./pigLatin');

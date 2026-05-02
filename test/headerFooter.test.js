@@ -1,4 +1,4 @@
-const { addHeaderFooter, stripHeaderFooter, hasWrapper } = require('../headerFooter');
+const { addHeaderFooter, stripHeaderFooter, hasWrapper } = require('../src/headerFooter');
 
 describe('addHeaderFooter', () => {
   it('adds PLP header and footer by default', () => {
