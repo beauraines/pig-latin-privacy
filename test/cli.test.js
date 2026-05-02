@@ -147,3 +147,42 @@ describe('CLI error handling', () => {
     }
   });
 });
+describe('CLI shell completion', () => {
+  it('outputs bash/zsh completion script with "completion"', () => {
+    const output = execSync(`${CLI} completion`).toString();
+    expect(output).toContain('###-begin-plp-completions-###');
+    expect(output).toContain('_plp_yargs_completions');
+    expect(output).toContain('complete -o bashdefault -o default -F _plp_yargs_completions plp');
+    expect(output).toContain('###-end-plp-completions-###');
+  });
+
+  it('"completion bash" outputs the same script as "completion"', () => {
+    const outputDefault = execSync(`${CLI} completion`).toString();
+    const outputBash = execSync(`${CLI} completion bash`).toString();
+    expect(outputDefault).toBe(outputBash);
+  });
+
+  it('"completion zsh" outputs the same script as "completion"', () => {
+    const outputDefault = execSync(`${CLI} completion`).toString();
+    const outputZsh = execSync(`${CLI} completion zsh`).toString();
+    expect(outputDefault).toBe(outputZsh);
+  });
+
+  it('outputs fish completion script with "completion fish"', () => {
+    const output = execSync(`${CLI} completion fish`).toString();
+    expect(output).toContain('###-begin-plp-completion-###');
+    expect(output).toContain('complete -c plp');
+    expect(output).toContain('###-end-plp-completion-###');
+  });
+
+  it('completion script covers all CLI options via dynamic completions', () => {
+    const output = execSync(`${CLI} --get-yargs-completions plp --`).toString();
+    expect(output).toContain('--encrypt');
+    expect(output).toContain('--decrypt');
+    expect(output).toContain('--armor');
+    expect(output).toContain('--no-armor');
+    expect(output).toContain('--output');
+    expect(output).toContain('--type');
+    expect(output).toContain('--input');
+  });
+});

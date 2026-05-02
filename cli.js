@@ -1,26 +1,38 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 const fs = require('fs');
 const { version } = require('./package.json');
 const { readStdin } = require('./utils');
 const { addHeaderFooter, stripHeaderFooter, hasWrapper, hasAnyMarker } = require('./headerFooter');
 const { encode, decode } = require('./pigLatin');
+const { FISH_COMPLETION } = require('./completion');
 
-program
+// yargs' built-in completion() handles bash/zsh; fish needs a separate handler
+if (process.argv[2] === 'completion' && process.argv[3] === 'fish') {
+  console.log(FISH_COMPLETION);
+  process.exit(0);
+}
+
+const argv = yargs(hideBin(process.argv))
+  .scriptName('plp')
+  .command('$0 [message]', 'Pig Latin Privacy (PLP) — PGP-style "encryption" using Pig Latin', (y) => {
+    y.positional('message', { describe: 'Input message (if not provided, reads from stdin)', type: 'string' });
+  })
   .version(version)
-  .description('Pig Latin Privacy (PLP) — PGP-style "encryption" using Pig Latin')
-  .argument('[message]', 'Input message (if not provided, reads from stdin)')
-  .option('-e, --encrypt', 'Encrypt (translate to Pig Latin)')
-  .option('-d, --decrypt', 'Decrypt (translate from Pig Latin)')
-  .option('-a, --armor', 'Create ASCII armored output (header/footer wrapper)')
-  .option('--no-armor', 'Output without ASCII armor')
-  .option('-o, --output <file>', 'Write output to file')
-  .option('-t, --type <type>', 'Armor type label', 'plp')
-  .option('-i, --input <file>', 'Read input from a file')
-  .parse(process.argv);
+  .option('encrypt',  { alias: 'e', boolean: true, describe: 'Encrypt (translate to Pig Latin)' })
+  .option('decrypt',  { alias: 'd', boolean: true, describe: 'Decrypt (translate from Pig Latin)' })
+  .option('armor',    { alias: 'a', boolean: true, describe: 'Create ASCII armored output (header/footer wrapper)' })
+  .option('no-armor', { boolean: true, describe: 'Output without ASCII armor' })
+  .option('output',   { alias: 'o', string: true,  describe: 'Write output to file', nargs: 1 })
+  .option('type',     { alias: 't', string: true,  describe: 'Armor type label', default: 'plp' })
+  .option('input',    { alias: 'i', string: true,  describe: 'Read input from a file', nargs: 1 })
+  .completion('completion', 'Generate shell completion script (bash/zsh). For fish: plp completion fish')
+  .help()
+  .parse();
 
-const options = program.opts();
+const options = argv;
 
 // Validate mutually exclusive flags
 if (options.encrypt && options.decrypt) {
@@ -38,8 +50,8 @@ if (options.encrypt && options.decrypt) {
       console.error(`Error: Cannot read file '${options.input}': ${err.message}`);
       process.exit(1);
     }
-  } else if (program.args[0] !== undefined) {
-    inputMessage = program.args[0] + '\n';
+  } else if (argv.message !== undefined) {
+    inputMessage = argv.message + '\n';
   } else {
     inputMessage = await readStdin();
   }
