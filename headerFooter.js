@@ -48,3 +48,11 @@ module.exports.hasWrapper = function(text) {
   return /-----BEGIN [\w ]+ MESSAGE-----/.test(text) &&
          /-----END [\w ]+ MESSAGE-----/.test(text);
 };
+
+/**
+ * Check if text contains any armor marker (BEGIN or END), including partial wrappers.
+ */
+module.exports.hasAnyMarker = function(text) {
+  return /-----BEGIN [\w ]+ MESSAGE-----/.test(text) ||
+         /-----END [\w ]+ MESSAGE-----/.test(text);
+};

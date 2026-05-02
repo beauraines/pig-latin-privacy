@@ -3,7 +3,7 @@
 const { program } = require('commander');
 const fs = require('fs');
 const { readStdin } = require('./utils');
-const { addHeaderFooter, stripHeaderFooter, hasWrapper } = require('./headerFooter');
+const { addHeaderFooter, stripHeaderFooter, hasWrapper, hasAnyMarker } = require('./headerFooter');
 const { encode, decode } = require('./pigLatin');
 
 program
@@ -63,8 +63,7 @@ if (options.encrypt && options.decrypt) {
   } else {
     // Decrypt: strip wrapper if any armor marker is present, then decode
     let body = inputMessage;
-    if (/-----BEGIN [\w ]+ MESSAGE-----/.test(inputMessage) ||
-        /-----END [\w ]+ MESSAGE-----/.test(inputMessage)) {
+    if (hasAnyMarker(inputMessage)) {
       try {
         body = stripHeaderFooter(inputMessage);
       } catch (err) {
