@@ -17,7 +17,9 @@ if (process.argv[2] === 'completion' && process.argv[3] === 'fish') {
 
 const argv = yargs(hideBin(process.argv))
   .scriptName('plp')
-  .usage('$0 [options] [message]')
+  .command('$0 [message]', 'Pig Latin Privacy (PLP) — PGP-style "encryption" using Pig Latin', (y) => {
+    y.positional('message', { describe: 'Input message (if not provided, reads from stdin)', type: 'string' });
+  })
   .version(version)
   .option('encrypt',  { alias: 'e', boolean: true, describe: 'Encrypt (translate to Pig Latin)' })
   .option('decrypt',  { alias: 'd', boolean: true, describe: 'Decrypt (translate from Pig Latin)' })
@@ -48,8 +50,8 @@ if (options.encrypt && options.decrypt) {
       console.error(`Error: Cannot read file '${options.input}': ${err.message}`);
       process.exit(1);
     }
-  } else if (argv._[0] !== undefined) {
-    inputMessage = argv._[0] + '\n';
+  } else if (argv.message !== undefined) {
+    inputMessage = argv.message + '\n';
   } else {
     inputMessage = await readStdin();
   }
