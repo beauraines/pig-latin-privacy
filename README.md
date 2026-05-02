@@ -12,8 +12,7 @@ Installation and Usage
 ### Installation
 
 ```bash
-npm install
-npm link   # optional: makes 'plp' available globally
+npm install -g @beauraines/pig-latin-privacy
 ```
 
 ### Usage
