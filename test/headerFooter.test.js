@@ -12,6 +12,12 @@ describe('addHeaderFooter', () => {
     expect(result).toContain('-----END SECRET MESSAGE-----');
   });
 
+  it('uses multi-word type label', () => {
+    const result = addHeaderFooter('test', 'top secret');
+    expect(result).toContain('-----BEGIN TOP SECRET MESSAGE-----');
+    expect(result).toContain('-----END TOP SECRET MESSAGE-----');
+  });
+
   it('uppercases the type label', () => {
     const result = addHeaderFooter('test', 'plp');
     expect(result).toContain('BEGIN PLP MESSAGE');
@@ -42,6 +48,11 @@ describe('stripHeaderFooter', () => {
   it('throws on empty input', () => {
     expect(() => stripHeaderFooter('')).toThrow('Invalid message format');
   });
+
+  it('strips multi-word type label', () => {
+    const wrapped = '-----BEGIN TOP SECRET MESSAGE-----\ntest body\n-----END TOP SECRET MESSAGE-----\n';
+    expect(stripHeaderFooter(wrapped)).toBe('test body');
+  });
 });
 
 describe('hasWrapper', () => {
@@ -56,5 +67,10 @@ describe('hasWrapper', () => {
 
   it('returns false for partial wrapper', () => {
     expect(hasWrapper('-----BEGIN PLP MESSAGE-----\nno footer')).toBe(false);
+  });
+
+  it('returns true for multi-word type label', () => {
+    const wrapped = '-----BEGIN TOP SECRET MESSAGE-----\ntest\n-----END TOP SECRET MESSAGE-----\n';
+    expect(hasWrapper(wrapped)).toBe(true);
   });
 });
