@@ -22,9 +22,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js
+        # Pinned to Node 22.x (>= 22.14.0) to satisfy the engine requirement
+        # of @semantic-release/npm@^13.1.5: "^22.14.0 || >=24.10.0".
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
