@@ -147,3 +147,49 @@ describe('CLI error handling', () => {
     }
   });
 });
+describe('CLI shell completion', () => {
+  it('outputs bash completion script with "completion bash"', () => {
+    const output = execSync(`${CLI} completion bash`).toString();
+    expect(output).toContain('###-begin-plp-completion-###');
+    expect(output).toContain('_plp_completion');
+    expect(output).toContain('complete -F _plp_completion plp');
+    expect(output).toContain('###-end-plp-completion-###');
+  });
+
+  it('outputs zsh completion script with "completion zsh"', () => {
+    const output = execSync(`${CLI} completion zsh`).toString();
+    expect(output).toContain('###-begin-plp-completion-###');
+    expect(output).toContain('compdef _plp plp');
+    expect(output).toContain('###-end-plp-completion-###');
+  });
+
+  it('outputs fish completion script with "completion fish"', () => {
+    const output = execSync(`${CLI} completion fish`).toString();
+    expect(output).toContain('###-begin-plp-completion-###');
+    expect(output).toContain('complete -c plp');
+    expect(output).toContain('###-end-plp-completion-###');
+  });
+
+  it('defaults to bash completion when no shell is specified', () => {
+    const outputDefault = execSync(`${CLI} completion`).toString();
+    const outputBash = execSync(`${CLI} completion bash`).toString();
+    expect(outputDefault).toBe(outputBash);
+  });
+
+  it('errors on unsupported shell', () => {
+    expect(() => {
+      execSync(`${CLI} completion powershell`, { stdio: 'pipe' });
+    }).toThrow();
+  });
+
+  it('bash completion script includes all CLI options', () => {
+    const output = execSync(`${CLI} completion bash`).toString();
+    expect(output).toContain('--encrypt');
+    expect(output).toContain('--decrypt');
+    expect(output).toContain('--armor');
+    expect(output).toContain('--no-armor');
+    expect(output).toContain('--output');
+    expect(output).toContain('--type');
+    expect(output).toContain('--input');
+  });
+});

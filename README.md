@@ -73,6 +73,34 @@ plp "Hello World" | plp -d
 
 When no mode is specified, PLP auto-detects: if input contains a PLP armor wrapper, it decrypts; otherwise it encrypts.
 
+### Shell Completion
+
+PLP supports tab completion for bash, zsh, and fish shells.
+
+**Bash:**
+```bash
+# Add to ~/.bashrc for permanent completion
+eval "$(plp completion bash)"
+
+# Or install system-wide
+plp completion bash > /etc/bash_completion.d/plp
+```
+
+**Zsh:**
+```zsh
+# Add to ~/.zshrc for permanent completion
+eval "$(plp completion zsh)"
+
+# Or install to a directory in $fpath
+plp completion zsh > "${fpath[1]}/_plp"
+```
+
+**Fish:**
+```fish
+# Install to fish completions directory
+plp completion fish > ~/.config/fish/completions/plp.fish
+```
+
 ### Example Output
 
 ```
