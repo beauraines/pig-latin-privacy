@@ -122,4 +122,28 @@ describe('CLI error handling', () => {
       execSync(`${CLI} -i nonexistent-file.txt`, { stdio: 'pipe' });
     }).toThrow();
   });
+
+  it('errors on truncated armored input (missing footer) in decrypt mode', () => {
+    const tmpFile = path.join(__dirname, '.tmp-test-no-footer.txt');
+    fs.writeFileSync(tmpFile, '-----BEGIN PLP MESSAGE-----\nEllohay Orldway');
+    try {
+      expect(() => {
+        execSync(`${CLI} -d -i ${tmpFile}`, { stdio: 'pipe' });
+      }).toThrow();
+    } finally {
+      fs.unlinkSync(tmpFile);
+    }
+  });
+
+  it('errors on truncated armored input (missing header) in decrypt mode', () => {
+    const tmpFile = path.join(__dirname, '.tmp-test-no-header.txt');
+    fs.writeFileSync(tmpFile, 'Ellohay Orldway\n-----END PLP MESSAGE-----\n');
+    try {
+      expect(() => {
+        execSync(`${CLI} -d -i ${tmpFile}`, { stdio: 'pipe' });
+      }).toThrow();
+    } finally {
+      fs.unlinkSync(tmpFile);
+    }
+  });
 });

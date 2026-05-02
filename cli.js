@@ -61,9 +61,10 @@ if (options.encrypt && options.decrypt) {
       ? addHeaderFooter(translated, options.type)
       : translated;
   } else {
-    // Decrypt: strip wrapper if present, then decode
+    // Decrypt: strip wrapper if any armor marker is present, then decode
     let body = inputMessage;
-    if (hasWrapper(inputMessage)) {
+    if (/-----BEGIN [\w ]+ MESSAGE-----/.test(inputMessage) ||
+        /-----END [\w ]+ MESSAGE-----/.test(inputMessage)) {
       try {
         body = stripHeaderFooter(inputMessage);
       } catch (err) {
