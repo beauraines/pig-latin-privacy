@@ -21,27 +21,39 @@ npm link   # optional: makes 'plp' available globally
 **Encrypt (default):**
 
 ```bash
-# Encrypt a message (with wrapper)
+# Encrypt a message (with ASCII armor)
 plp "Hello World"
 
-# Encrypt without the wrapper
-plp --no-wrapper "Hello World"
+# Encrypt with explicit armor flag (like gpg -e -a)
+plp -e -a "Hello World"
+
+# Encrypt without armor
+plp --no-armor "Hello World"
 
 # Encrypt from stdin
 echo "This is a secret message" | plp
 
 # Encrypt from a file
 plp -i message.txt
+
+# Encrypt to an output file
+plp -o encrypted.txt "Hello World"
 ```
 
 **Decrypt:**
 
 ```bash
-# Decrypt a wrapped message
+# Decrypt a wrapped message (auto-detected)
+plp -i encrypted.txt
+
+# Decrypt with explicit flag
 plp -d -i encrypted.txt
 
 # Decrypt from stdin
 echo "Ellohay Orldway" | plp -d
+
+# Decrypt to an output file
+plp -d -o decrypted.txt -i encrypted.txt
 
 # Round-trip: encrypt then decrypt
 plp "Hello World" | plp -d
@@ -53,9 +65,13 @@ plp "Hello World" | plp -d
 |------|-------------|
 | `-e, --encrypt` | Encrypt (translate to Pig Latin) — this is the default |
 | `-d, --decrypt` | Decrypt (translate from Pig Latin back to English) |
-| `--no-wrapper` | Omit the PLP header and footer |
-| `-t, --type <type>` | Wrapper type label (default: `plp`) |
+| `-a, --armor` | Create ASCII armored output (header/footer) — on by default for encrypt |
+| `--no-armor` | Omit the ASCII armor |
+| `-o, --output <file>` | Write output to a file |
+| `-t, --type <type>` | Armor type label (default: `plp`) |
 | `-i, --input <file>` | Read input from a file instead of args/stdin |
+
+When no mode is specified, PLP auto-detects: if input contains a PLP armor wrapper, it decrypts; otherwise it encrypts.
 
 ### Example Output
 

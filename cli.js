@@ -12,8 +12,10 @@ program
   .argument('[message]', 'Input message (if not provided, reads from stdin)')
   .option('-e, --encrypt', 'Encrypt (translate to Pig Latin)')
   .option('-d, --decrypt', 'Decrypt (translate from Pig Latin)')
-  .option('--no-wrapper', 'Output message without header and footer')
-  .option('-t, --type <type>', 'Wrapper type label', 'plp')
+  .option('-a, --armor', 'Create ASCII armored output (header/footer wrapper)')
+  .option('--no-armor', 'Output without ASCII armor')
+  .option('-o, --output <file>', 'Write output to file')
+  .option('-t, --type <type>', 'Armor type label', 'plp')
   .option('-i, --input <file>', 'Read input from a file')
   .parse(process.argv);
 
@@ -24,9 +26,6 @@ if (options.encrypt && options.decrypt) {
   console.error('Error: --encrypt and --decrypt are mutually exclusive');
   process.exit(1);
 }
-
-// Default to encrypt if neither specified
-const mode = options.decrypt ? 'decrypt' : 'encrypt';
 
 (async () => {
   let inputMessage;
@@ -44,11 +43,21 @@ const mode = options.decrypt ? 'decrypt' : 'encrypt';
     inputMessage = await readStdin();
   }
 
+  // Auto-detect mode: decrypt if input has a PLP wrapper, encrypt otherwise
+  const mode = options.decrypt ? 'decrypt'
+    : options.encrypt ? 'encrypt'
+    : hasWrapper(inputMessage) ? 'decrypt'
+    : 'encrypt';
+
+  // Armor defaults: on for encrypt, off for decrypt
+  const useArmor = options.armor !== undefined ? options.armor
+    : mode === 'encrypt';
+
   let output;
 
   if (mode === 'encrypt') {
     const translated = encode(inputMessage);
-    output = options.wrapper
+    output = useArmor
       ? addHeaderFooter(translated, options.type)
       : translated;
   } else {
@@ -65,5 +74,14 @@ const mode = options.decrypt ? 'decrypt' : 'encrypt';
     output = decode(body);
   }
 
-  process.stdout.write(output);
+  if (options.output) {
+    try {
+      fs.writeFileSync(options.output, output);
+    } catch (err) {
+      console.error(`Error: Cannot write file '${options.output}': ${err.message}`);
+      process.exit(1);
+    }
+  } else {
+    process.stdout.write(output);
+  }
 })();

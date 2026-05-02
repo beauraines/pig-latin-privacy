@@ -5,30 +5,35 @@ const path = require('path');
 const CLI = 'node cli.js';
 
 describe('CLI encrypt', () => {
-  it('encrypts a message with wrapper by default', () => {
+  it('encrypts a message with armor by default', () => {
     const output = execSync(`${CLI} "Hello World"`).toString();
     expect(output).toContain('-----BEGIN PLP MESSAGE-----');
     expect(output).toContain('Ellohay Orldway');
     expect(output).toContain('-----END PLP MESSAGE-----');
   });
 
-  it('encrypts without wrapper using --no-wrapper', () => {
-    const output = execSync(`${CLI} --no-wrapper "Hello World"`).toString();
+  it('encrypts without armor using --no-armor', () => {
+    const output = execSync(`${CLI} --no-armor "Hello World"`).toString();
     expect(output).toContain('Ellohay Orldway');
     expect(output).not.toContain('-----BEGIN PLP MESSAGE-----');
   });
 
+  it('supports -a flag for explicit armor', () => {
+    const output = execSync(`${CLI} -a "Hello World"`).toString();
+    expect(output).toContain('-----BEGIN PLP MESSAGE-----');
+  });
+
   it('encrypts from stdin', () => {
-    const output = execSync(`echo "Hello World" | ${CLI} --no-wrapper`).toString();
+    const output = execSync(`echo "Hello World" | ${CLI} --no-armor`).toString();
     expect(output).toContain('Ellohay Orldway');
   });
 
   it('encrypts a full sentence from stdin', () => {
-    const output = execSync(`echo "The quick brown fox jumps over the lazy dog." | ${CLI} --no-wrapper`).toString();
+    const output = execSync(`echo "The quick brown fox jumps over the lazy dog." | ${CLI} --no-armor`).toString();
     expect(output).toContain('Ethay uickqay ownbray oxfay umpsjay overyay ethay azylay ogday.');
   });
 
-  it('uses custom wrapper type with -t', () => {
+  it('uses custom armor type with -t', () => {
     const output = execSync(`${CLI} -t secret "Hello"`).toString();
     expect(output).toContain('-----BEGIN SECRET MESSAGE-----');
     expect(output).toContain('-----END SECRET MESSAGE-----');
@@ -38,10 +43,21 @@ describe('CLI encrypt', () => {
     const tmpFile = path.join(__dirname, '.tmp-test-input.txt');
     fs.writeFileSync(tmpFile, 'Hello World');
     try {
-      const output = execSync(`${CLI} --no-wrapper -i ${tmpFile}`).toString();
+      const output = execSync(`${CLI} --no-armor -i ${tmpFile}`).toString();
       expect(output).toContain('Ellohay Orldway');
     } finally {
       fs.unlinkSync(tmpFile);
+    }
+  });
+
+  it('writes output to a file with -o', () => {
+    const tmpFile = path.join(__dirname, '.tmp-test-output.txt');
+    try {
+      execSync(`${CLI} --no-armor -o ${tmpFile} "Hello World"`);
+      const content = fs.readFileSync(tmpFile, 'utf8');
+      expect(content).toContain('Ellohay Orldway');
+    } finally {
+      if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
     }
   });
 });
@@ -69,10 +85,28 @@ describe('CLI decrypt', () => {
     }
   });
 
+  it('writes decrypted output to a file with -o', () => {
+    const outFile = path.join(__dirname, '.tmp-test-decrypt-out.txt');
+    try {
+      execSync(`echo "Ellohay Orldway" | ${CLI} -d -o ${outFile}`);
+      const content = fs.readFileSync(outFile, 'utf8');
+      expect(content.trim()).toBe('Hello World');
+    } finally {
+      if (fs.existsSync(outFile)) fs.unlinkSync(outFile);
+    }
+  });
+
   it('round-trips a sentence through encrypt then decrypt', () => {
     const original = 'The quick brown fox jumps over the lazy dog.';
-    const output = execSync(`echo "${original}" | ${CLI} --no-wrapper | ${CLI} -d`).toString();
+    const output = execSync(`echo "${original}" | ${CLI} --no-armor | ${CLI} -d`).toString();
     expect(output.trim()).toBe(original);
+  });
+});
+
+describe('CLI auto-detect mode', () => {
+  it('auto-decrypts when stdin contains a PLP wrapper', () => {
+    const output = execSync(`${CLI} "Hello World" | ${CLI}`).toString();
+    expect(output.trim()).toBe('Hello World');
   });
 });
 
