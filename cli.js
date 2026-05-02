@@ -2,12 +2,13 @@
 
 const { program } = require('commander');
 const fs = require('fs');
+const { version } = require('./package.json');
 const { readStdin } = require('./utils');
 const { addHeaderFooter, stripHeaderFooter, hasWrapper, hasAnyMarker } = require('./headerFooter');
 const { encode, decode } = require('./pigLatin');
 
 program
-  .version('1.0.0')
+  .version(version)
   .description('Pig Latin Privacy (PLP) — PGP-style "encryption" using Pig Latin')
   .argument('[message]', 'Input message (if not provided, reads from stdin)')
   .option('-e, --encrypt', 'Encrypt (translate to Pig Latin)')

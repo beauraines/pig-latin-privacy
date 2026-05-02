@@ -10,6 +10,14 @@
     "test": "jest --passWithNoTests",
     "lint": "eslint ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/beauraines/pig-latin-privacy.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
